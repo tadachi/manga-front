@@ -10,11 +10,11 @@ var geoip           = require('geoip-lite');
 // Simple timestamp function. Invoke with timestamp();
 htimeStamp = function() {
     var date = new Date();
-    result = '[' + date.getFullYear() + '/' + date.getMonth() + '/' +
+    var result = '[' + date.getFullYear() + '/' + date.getMonth() + '/' +
         date.getDate() + '/' + date.getHours() + ':' +
         date.getMinutes() + ':' + date.getSeconds() + ']';
     return result;
-}
+};
 
 /**
  * Configure Logger
@@ -41,23 +41,30 @@ var ioHttp = require('socket.io').listen(httpServer);
 // This app is routed to a variable called homepage called homepage calling express. You can host multiple websites by following homepage as a template.
 var www = express();
 
+// Config for router.
+www.set('strict routing', true);
+www.enable('case sensitive routing');
+
 /**
  *  Explicitly setup the website(s)' resources.
  */
-www.use('/js', express.static(__dirname + '/homepage/view/js'));
-www.use('/css', express.static(__dirname + '/homepage/view/css'));
-www.use('/fonts', express.static(__dirname + '/homepage/view/fonts'));
+www.use('/js', express.static(__dirname + '/js'));
+www.use('/css', express.static(__dirname + '/css'));
+www.use('/fonts', express.static(__dirname + '/fonts'));
+
+// eg. http://localhost:4000/manga_index/another_world_it_exists_index.json
+app.use('/manga_index',express.static(__dirname + '/manga_index'));
 
 /**
  *  Serve web content.
  */
-www.get('/', function(req, res) {
+app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
     eventEmitter.emit('process IP', req.ip);
-})
+});
 
 // '*' denotes catch all. If the above routes do not trigger, respond with 404.
-app.get('*', function(req, res, next) {
+app.get('*', function(req, res) {
     // Replace with your own custom 404.
     res.send('404 not found.'); // send text response
 });
