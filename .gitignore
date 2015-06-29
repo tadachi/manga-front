@@ -1,0 +1,13 @@
+.idea/
+intelxdk.config.additions.xml
+intelxdk.config.android.xml
+intelxdk.config.crosswalk.xml
+intelxdk.config.ios.xml
+intelxdk.config.windows8.xml
+*.xdk
+*.xdke
+npm-debug.log
+node_modules/
+manga-scraper/
+manga/
+manga_index/

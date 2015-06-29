@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Shadow DOMed -->
+    <!-- Jquery -->
+    <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+    <!-- AngularJS -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.15/angular.min.js'></script>
+</head>
+<script>
+    var app = angular.module("App", []);
+
+    app.controller("Ctrl", function($scope, $http) {
+
+    });
+</script>
+<body>
+<div id="header">
+    <!-- Shadow DOMed -->
+</div>
+<div id="body">
+
+</div>
+<div id="footer">
+    <!-- Shadow DOMed -->
+</div>
+</body>
+</html>
+
+<template id="headTemplate">
+    <meta charset="utf-8">
+    <title>stub</title>
+    <meta name="description" content="App">
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+</template>
+
+<template id="headerTemplate">
+    Header
+</template>
+
+<template id="bodyTemplate">
+    Body
+</template>
+
+<template id="footerTemplate">
+    Footer
+</template>
+
+<script>
+    var shadow = document.head.createShadowRoot();
+    var template = document.querySelector('#headTemplate');
+    var templateClone = document.importNode(template.content, true);
+    shadow.appendChild(templateClone);
+</script>
+
+<script>
+    var shadow = document.querySelector("#header").createShadowRoot();
+    var template = document.querySelector('#headerTemplate');
+    var templateClone = document.importNode(template.content, true);
+    shadow.appendChild(templateClone);
+</script>
+
+<script>
+    var shadow = document.querySelector("#body").createShadowRoot();
+    var template = document.querySelector('#bodyTemplate');
+    var templateClone = document.importNode(template.content, true);
+    shadow.appendChild(templateClone);
+</script>
+
+<script>
+    var shadow = document.querySelector("#footer").createShadowRoot();
+    var template = document.querySelector('#footerTemplate');
+    var templateClone = document.importNode(template.content, true);
+    shadow.appendChild(templateClone);
+</script>
