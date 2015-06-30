@@ -8,7 +8,7 @@ var app             = express();
 var geoip           = require('geoip-lite');
 
 // Simple timestamp function. Invoke with timestamp();
-htimeStamp = function() {
+var htimeStamp = function() {
     var date = new Date();
     var result = '[' + date.getFullYear() + '/' + date.getMonth() + '/' +
         date.getDate() + '/' + date.getHours() + ':' +
@@ -54,6 +54,8 @@ www.use('/fonts', express.static(__dirname + '/fonts'));
 
 // eg. http://localhost:4000/manga_index/another_world_it_exists_index.json
 app.use('/manga_index',express.static(__dirname + '/manga_index'));
+// eg. http://localhost:4000/manga/another_world_it_exists/vo1/001.jpg ... 002.jpg
+app.use('/manga',express.static(__dirname + '/manga'));
 
 /**
  *  Serve web content.
