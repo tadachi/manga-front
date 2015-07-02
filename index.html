@@ -7,7 +7,8 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>
     <!-- AngularJS -->
     <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.1/angular.min.js'></script>
-    <!--<loadMangaScript src='https://code.angularjs.org/1.4.0-rc.2/angular.min.js'></loadMangaScript>-->
+    <!-- StringJS -->
+    <script src="https://cdn.rawgit.com/jprichardson/string.js/master/lib/string.min.js"></script>
 </head>
 <script>
     var app = angular.module("App", []);
@@ -23,7 +24,7 @@
 
         //http://localhost:4000/manga/another_world_it_exists/v01/c001/001.jpg
         $scope.hostname = $location.absUrl(); // http://localhost:4000, http://beastmachine/, http://www.tak.com/
-        $scope.manga_name;
+        $scope.manga_name; // Manga name.
 
         $scope.manga_index_url = $scope.hostname + 'manga_index/index.json';
         $scope.url;
@@ -39,6 +40,9 @@
             $scope.src = $scope.hostname + url;
         };
 
+        /**
+         * Go to next manga page.
+         */
         $scope.next = function() {
             var i_len = $scope.pages.length;
             var j_len = $scope.chapters.length;
@@ -70,6 +74,9 @@
 //            console.log('page: ' + $scope.selectedPage.index + '\n\n');
         };
 
+        /**
+         * Go to prev manga page.
+         */
         $scope.prev = function() {
             var i, j = 0;
             if ($scope.selectedPage) i = $scope.selectedPage.index;
@@ -101,6 +108,9 @@
 //            console.log('page: ' + $scope.selectedPage.index + '\n\n');
         };
 
+        /**
+         * Capture key events and call other functions.
+         */
         $scope.key = function($event) {
             if ($event.keyCode == 39) //RIGHT arrow
                 $scope.next();
@@ -112,7 +122,6 @@
         };
 
         /**
-         *
          *
          * @param url, callback
          * @returns callback
@@ -144,6 +153,9 @@
             });
         };
 
+        /**
+         * Set chapters to selected manga.
+         */
         $scope.setChapterIndex = function(manga_index) {
             // Reset Chapters.
             $scope.chapters = [];
@@ -169,6 +181,9 @@
             $scope.manga_name = manga_index['manga_name'];
         };
 
+        /**
+         * Change the pages to selected chapter.
+         */
         $scope.changeChapterPages = function(index) {
             // Reset pages and set to new chapter.
             $scope.pages = [];
@@ -188,6 +203,9 @@
             $scope.setImgSrc($scope.selectedPage.url);
         };
 
+        /**
+         * Procedural script to load mangas from index.json.
+         */
         $scope.loadMangaListScript = function(url, callback) {
             $scope.manga_index_url = url;
 
@@ -222,6 +240,9 @@
 
         };
 
+        /**
+         * Procedural script to load chapters from {manga_name}_index.json.
+         */
         $scope.loadMangaScript = function(url) {
             $scope.url = url;
             console.log(url);
@@ -247,20 +268,18 @@
 //                    console.log('chapter: ' + $scope.selectedChapter.index);
 //                    console.log('page ' + $scope.selectedPage.index + '\n');
 
-//                    return manga_index;
                 })
-                .then( function(manga_index) {
-
-                })
+//                .then( function(manga_index) {
+//
+//                })
         };
 
         angular.element(document).ready(function () {
             console.log('Hello World');
             // Debug
 //            console.log(angular.version);
+            // Load list of mangas from index.json
             $scope.loadMangaListScript($scope.manga_index_url);
-//            $scope.loadMangaScript($scope.hostname + 'manga_index/another_world_it_exists_index.json');
-//            $scope.loadMangaScript($scope.hostname + 'manga_index/owari_no_seraph_index.json');
         });
 
     });
@@ -273,10 +292,11 @@
     Body
     <div >
         <div>
-            <p>selected item is : {{selectedManga.title}}</p>
-            <p>selected item is : {{selectedManga.path}}</p>
-            <p>selected item is : {{selectedChapter.title}}</p>
-            <p>selected item is : {{selectedPage.page}}</p>
+            <!-- Debug ->
+            <!--<p>selected item is : {{selectedManga.title}}</p>-->
+            <!--<p>selected item is : {{selectedManga.path}}</p>-->
+            <!--<p>selected item is : {{selectedChapter.title}}</p>-->
+            <!--<p>selected item is : {{selectedPage.page}}</p>-->
             <!-- track by is a hack -->
             <select ng-model="selectedManga"
                     ng-options="manga.title for manga in mangas track by manga.title"
