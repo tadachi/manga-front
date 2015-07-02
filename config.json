@@ -1,5 +1,5 @@
 {
   "port": 4000,
   "manga_directory": "manga",
-  "manga_index_direcotry": "manga_index",
+  "manga_index_directory": "manga_index",
 }

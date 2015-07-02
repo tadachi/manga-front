@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="App">
 
 <head>
     <!-- Shadow DOMed -->
@@ -13,36 +13,28 @@
     var app = angular.module("App", []);
 
     app.controller("Ctrl", function($scope, $http, $q, $location) {
+        /*
+         * Variables
+         */
+        $scope.mangas = [];
         $scope.chapters = [];
         $scope.chapters_pages = [];
         $scope.pages = []; // [{page: 'Page 1', url: 'http://hostname/manga/manga_name/volume/chapter/001.jpg'}]
-        $scope.selectedChapter;
-        $scope.selectedPage;
-        $scope.hostname = $location.absUrl(); // http://localhost:4000, http://beastmachine/, http://www.tak.com/
-        $scope.src = "";
+
         //http://localhost:4000/manga/another_world_it_exists/v01/c001/001.jpg
-        $scope.url = $scope.hostname + 'manga_index/another_world_it_exists_index.json';
+        $scope.hostname = $location.absUrl(); // http://localhost:4000, http://beastmachine/, http://www.tak.com/
         $scope.manga_name;
 
-        $scope.changeChapterPages = function(index) {
-            // Reset pages and set to new chapter.
-            $scope.pages = [];
+        $scope.manga_index_url = $scope.hostname + 'manga_index/index.json';
+        $scope.url;
+        $scope.selectedManga;
+        $scope.selectedChapter;
+        $scope.selectedPage;
+        $scope.src = "";
 
-            // Set it.
-            if ($scope.chapters_pages[index]) {
-                var i = 0;
-
-                angular.forEach($scope.chapters_pages[index]['images'], function(page_url) {
-                    $scope.pages.push({page: 'Page ' + (i + 1), url: page_url, index: i}); // +1 for pages.
-                    i++;
-                });
-
-            }
-
-            $scope.selectedPage = $scope.pages[0];
-            $scope.setImgSrc($scope.selectedPage.url);
-        };
-
+        /**
+         * Functions
+         */
         $scope.setImgSrc = function(url) {
             $scope.src = $scope.hostname + url;
         };
@@ -109,6 +101,16 @@
 //            console.log('page: ' + $scope.selectedPage.index + '\n\n');
         };
 
+        $scope.key = function($event) {
+            if ($event.keyCode == 39) //RIGHT arrow
+                $scope.next();
+            else if ($event.keyCode == 37) // LEFT arrow.
+                $scope.prev();
+//            else if ($even.keyCode == 38) // UP arrow.
+//            else if ($event.keyCode == 40) //DOWN arrow.
+
+        };
+
         /**
          *
          *
@@ -142,11 +144,11 @@
             });
         };
 
-        $scope.getMangaIndexesQ = function() {
-
-        }
-
         $scope.setChapterIndex = function(manga_index) {
+            // Reset Chapters.
+            $scope.chapters = [];
+            $scope.chapters_pages = [];
+
             var i = 0;
             angular.forEach(manga_index['volumes'], function(chapters, volume) { //value, key
 
@@ -164,16 +166,67 @@
             });
 
             // Set current manga_name to this manga.
-            $scope.setCurrentMangaName(manga_index['manga_name']);
+            $scope.manga_name = manga_index['manga_name'];
         };
 
-        $scope.setCurrentMangaName = function(manga_name) {
-            $scope.manga_name = manga_name;
+        $scope.changeChapterPages = function(index) {
+            // Reset pages and set to new chapter.
+            $scope.pages = [];
+
+            // Set it.
+            if ($scope.chapters_pages[index]) {
+                var i = 0;
+
+                angular.forEach($scope.chapters_pages[index]['images'], function(page_url) {
+                    $scope.pages.push({page: 'Page ' + (i + 1), url: page_url, index: i}); // +1 for pages.
+                    i++;
+                });
+
+            }
+
+            $scope.selectedPage = $scope.pages[0];
+            $scope.setImgSrc($scope.selectedPage.url);
+        };
+
+        $scope.loadMangaListScript = function(url, callback) {
+            $scope.manga_index_url = url;
+
+            t(function(mangas) {
+                angular.forEach(mangas, function(manga) {
+                    // STUB Give title a fancier title.
+                    $scope.mangas.push({
+                        title: manga['title'], index: manga['index'],
+                        path: $scope.hostname + manga['path']
+                    })
+                });
+
+
+                console.log($scope.mangas);
+
+                // Set default selected Manga
+                $scope.selectedManga = $scope.mangas[0];
+
+                // Load default manga
+                $scope.loadMangaScript($scope.selectedManga.path);
+            });
+
+            function t(callback) {
+                $http.get(url).
+                    success(function(data) {
+                        callback(data)
+                    }).
+                    error(function(data) {
+                        callback(data);
+                    });
+            }
+
         };
 
         $scope.loadMangaScript = function(url) {
             $scope.url = url;
-            $scope.getMangaIndexQ($scope.url)
+            console.log(url);
+            console.log($scope.url);
+            $scope.getMangaIndexQ(url)
                 .then( function(manga_index){
                     $scope.setChapterIndex(manga_index);
 
@@ -183,6 +236,7 @@
                     // Set default selected chapter.
                     $scope.selectedChapter = $scope.chapters[0];
 
+                    // set default selected page to first.
                     $scope.selectedPage = $scope.pages[0];
 
                     // Change the src to the first page.
@@ -193,7 +247,7 @@
 //                    console.log('chapter: ' + $scope.selectedChapter.index);
 //                    console.log('page ' + $scope.selectedPage.index + '\n');
 
-                    return manga_index;
+//                    return manga_index;
                 })
                 .then( function(manga_index) {
 
@@ -204,27 +258,30 @@
             console.log('Hello World');
             // Debug
 //            console.log(angular.version);
-
-            $scope.loadMangaScript($scope.hostname + 'manga_index/another_world_it_exists_index.json');
+            $scope.loadMangaListScript($scope.manga_index_url);
+//            $scope.loadMangaScript($scope.hostname + 'manga_index/another_world_it_exists_index.json');
+//            $scope.loadMangaScript($scope.hostname + 'manga_index/owari_no_seraph_index.json');
         });
 
     });
 </script>
-<body>
+<body ng-controller="Ctrl" ng-keydown="key($event)">
 <div id="header">
     <!-- Shadow DOMed -->
 </div>
 <div id="body">
     Body
-    <div ng-app="App">
-        <div ng-controller="Ctrl">
-            <!--<p>selected item is : {{selectedChapter.title}}</p>-->
-            <!--<p>selected item is : {{selectedPage.page}}</p>-->
+    <div >
+        <div>
+            <p>selected item is : {{selectedManga.title}}</p>
+            <p>selected item is : {{selectedManga.path}}</p>
+            <p>selected item is : {{selectedChapter.title}}</p>
+            <p>selected item is : {{selectedPage.page}}</p>
             <!-- track by is a hack -->
-            <select ng-model="selectedChapter"
-                    ng-options="chapter.title for chapter in chapters track by chapter.title"
-                    ng-change="changeChapterPages(selectedChapter.index)">
-                <option value="" disabled> - Pick a Chapter - </option>
+            <select ng-model="selectedManga"
+                    ng-options="manga.title for manga in mangas track by manga.title"
+                    ng-change="loadMangaScript(selectedManga.path)">
+                <option value="" disabled> - Pick a Manga - </option>
             </select>
             <select ng-model="selectedChapter"
                     ng-options="chapter.title for chapter in chapters track by chapter.title"
