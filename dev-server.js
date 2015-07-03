@@ -6,6 +6,7 @@ var eventEmitter    = new events.EventEmitter();
 
 var app             = express();
 var geoip           = require('geoip-lite');
+var vhost           = require('vhost');
 
 // Simple timestamp function. Invoke with timestamp();
 var htimeStamp = function() {
@@ -56,6 +57,12 @@ www.use('/fonts', express.static(__dirname + '/fonts'));
 app.use('/manga_index',express.static(__dirname + '/manga_index'));
 // eg. http://localhost:4000/manga/another_world_it_exists/vo1/001.jpg ... 002.jpg
 app.use('/manga',express.static(__dirname + '/manga'));
+
+// Actual domain names.
+app.use(vhost('localhost', www));
+// Local host file domain names.
+//app.use(vhost('www.tak.com', home));
+
 
 /**
  *  Serve web content.
