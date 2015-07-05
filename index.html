@@ -14,6 +14,9 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <!-- Optional theme -->
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <!-- Manga-front css -->
+    <link rel="stylesheet" href="css/manga-front.css">
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Manga-Front.js must come after AngularJS -->
@@ -21,46 +24,97 @@
 </head>
 
 <body ng-controller="Ctrl" ng-keydown="key($event)">
-<div id="header">
-    <!-- Shadow DOMed -->
-</div>
-<div id="body">
-    Body
-    <div >
-        <div>
-            <!-- Debug ->
+<div id="header" class="container-fluid">
+    <div class="row top-buffer">
+
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+            <div class="row">
+                <form class="form-horizontal">
+                    <div class="form-group form-group-lg">
+                        <div class="col-xs-1">
+                            <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <select class="form-control"
+                                    ng-model="selectedManga"
+                                    ng-options="manga.title for manga in mangas track by manga.title"
+                                    ng-change="loadMangaScript(selectedManga.path)">
+                                <option value="" disabled> - Pick a Manga - </option>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-4">
+                            <select class="form-control"
+                                    ng-model="selectedChapter"
+                                    ng-options="chapter.title for chapter in chapters track by chapter.title"
+                                    ng-change="changeChapterPages(selectedChapter.index, opts)">
+                                <option value="" disabled> - Pick a Chapter - </option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-xs-2">
+                            <select class="form-control"
+                                    ng-model="selectedPage"
+                                    ng-options="page.page for page in pages"
+                                    ng-change="setImgSrc(selectedPage.url)">
+                                <option value="" disabled> - Pick a Page - </option>
+                            </select>
+                        </div>
+
+                        <div class="col-xs-1">
+                            <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <!-- Debug -->
             <!--<p>selected item is : {{selectedManga.title}}</p>-->
-            <!--<p>selected item is : {{selectedManga.path}}</p>-->
-            <!--<p>selected item is : {{selectedChapter.title}}</p>-->
+            <!--<p>selected item is : {{selectedManga.path}</p>-->
+            <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
             <!--<p>selected item is : {{selectedPage.page}}</p>-->
             <!-- track by is a hack -->
-            <select ng-model="selectedManga"
-                    ng-options="manga.title for manga in mangas track by manga.title"
-                    ng-change="loadMangaScript(selectedManga.path)">
-                <option value="" disabled> - Pick a Manga - </option>
-            </select>
-            <select ng-model="selectedChapter"
-                    ng-options="chapter.title for chapter in chapters track by chapter.title"
-                    ng-change="changeChapterPages(selectedChapter.index)">
-                <option value="" disabled> - Pick a Chapter - </option>
-            </select>
-            <select ng-model="selectedPage"
-                    ng-options="page.page for page in pages"
-                    ng-change="setImgSrc(selectedPage.url)"
-                    >
-                <option value="" disabled> - Pick a Page - </option>
-            </select>
-            <button ng-click="prev()"> Prev </button>
-            <button ng-click="next()"> Next </button>
+        </div>
+
+        <div class="col-md-2"></div>
+
+    </div>
+</div>
+
+<div id="body" class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+
+        </div>
+        <div class="col-md-8">
             <div id="image">
-                <img ng-src="{{src}}" />
+                <img class="img-responsive center-image" ng-src="{{src}}" />
             </div>
+        </div>
+        <div class="col-md-2">
+
         </div>
     </div>
 </div>
 
 <div id="footer">
-    <!-- Shadow DOMed -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+
+            </div>
+            <div class="col-md-8">
+                Manga-Front App 2015
+            </div>
+            <div class="col-md-2">
+
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
@@ -70,14 +124,7 @@
     <title>stub</title>
     <meta name="description" content="App">
     <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-</template>
-
-<template id="headerTemplate">
-    Header
-</template>
-
-<template id="footerTemplate">
-    Footer
+    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Bootstrap 3-->
 </template>
 
 <script>
@@ -87,16 +134,3 @@
     shadow.appendChild(templateClone);
 </script>
 
-<script>
-    var shadow = document.querySelector("#header").createShadowRoot();
-    var template = document.querySelector('#headerTemplate');
-    var templateClone = document.importNode(template.content, true);
-    shadow.appendChild(templateClone);
-</script>
-
-<script>
-    var shadow = document.querySelector("#footer").createShadowRoot();
-    var template = document.querySelector('#footerTemplate');
-    var templateClone = document.importNode(template.content, true);
-    shadow.appendChild(templateClone);
-</script>

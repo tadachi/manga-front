@@ -20,6 +20,8 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     $scope.selectedPage;
     $scope.src = "";
 
+    $scope.opts = {'preload': true}
+
     /**
      * Functions
      */
@@ -47,7 +49,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
             if ((j + 1) < j_len) {
                 j++;
                 $scope.selectedChapter = $scope.chapters[j]; // Change chapter.
-                $scope.changeChapterPages(j); // Set pages to current chapter.
+                $scope.changeChapterPages(j, $scope.opts); // Set pages to current chapter.
 
             } else {
                 // Show end of manga alert.
@@ -79,7 +81,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
             if ( !((j - 1) < 0) ) {
                 j--;
                 $scope.selectedChapter = $scope.chapters[j]; // Change chapter.
-                $scope.changeChapterPages(j); // Set pages to current chapter.
+                $scope.changeChapterPages(j, $scope.opts); // Set pages to current chapter.
                 i = $scope.pages.length - 1; // Last page of chapter.
                 $scope.selectedPage = $scope.pages[i]; // Set to last page.
             } else {
@@ -173,7 +175,10 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     /**
      * Change the pages to selected chapter.
      */
-    $scope.changeChapterPages = function(index) {
+    $scope.changeChapterPages = function(index, opts) {
+        var preload = true;
+        if (opts['preload']) { preload = opts['preload'] };
+
         // Reset pages and set to new chapter.
         $scope.pages = [];
 
@@ -182,8 +187,16 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
             var i = 0;
 
             angular.forEach($scope.chapters_pages[index]['images'], function(page_url) {
+
                 $scope.pages.push({page: 'Page ' + (i + 1), url: page_url, index: i}); // +1 for pages.
                 i++;
+
+                if (preload) {
+                    var preloadImage = new Image();
+                    preloadImage.src = page_url;
+                    preloadImage.onload;
+                }
+
             });
 
         }
@@ -241,7 +254,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
                 $scope.setChapterIndex(manga_index);
 
                 // Change pages to selected chapter.
-                $scope.changeChapterPages(0);
+                $scope.changeChapterPages(0, $scope.opts);
 
                 // Set default selected chapter.
                 $scope.selectedChapter = $scope.chapters[0];
