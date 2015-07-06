@@ -1,6 +1,6 @@
-# get-going
+# Manga-Front
 
-My personal template that contains most of the frameworks I use for my own projects.
+Web front end for manga downloaded through https://github.com/tadachi/manga-scraper .
 
 ## Install
 
