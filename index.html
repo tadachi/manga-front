@@ -24,66 +24,129 @@
 </head>
 
 <body ng-controller="Ctrl" ng-keydown="key($event)">
-<div id="header" class="container-fluid">
-    <div class="row top-buffer">
+    <!-- Desktop -->
+    <div class="container-fluid visible-md-block visible-lg-block">
+        <div class="row top-buffer">p
 
-        <div class="col-md-2"></div>
+            <div class="col-md-2"></div>
 
-        <div class="col-md-8">
-            <div class="row">
-                <form class="form-horizontal">
-                    <div class="form-group form-group-lg">
-                        <div class="col-xs-1">
-                            <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+            <div class="col-md-8">
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-lg">
+                            <div class="col-xs-1">
+                                <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <select class="form-control"
+                                        ng-model="selectedManga"
+                                        ng-options="manga.title for manga in mangas track by manga.title"
+                                        ng-change="loadMangaScript(selectedManga.path)">
+                                    <option value="" disabled> - Pick a Manga - </option>
+                                </select>
+                            </div>
+
+                            <div class="col-xs-4">
+                                <select class="form-control"
+                                        ng-model="selectedChapter"
+                                        ng-options="chapter.title for chapter in chapters track by chapter.title"
+                                        ng-change="changeChapterPages(selectedChapter.index, opts)">
+                                    <option value="" disabled> - Pick a Chapter - </option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-xs-2">
+                                <select class="form-control"
+                                        ng-model="selectedPage"
+                                        ng-options="page.page for page in pages"
+                                        ng-change="setImgSrc(selectedPage.url)">
+                                    <option value="" disabled> - Pick a Page - </option>
+                                </select>
+                            </div>
+
+                            <div class="col-xs-1">
+                                <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                            </div>
                         </div>
+                    </form>
 
-                        <div class="col-xs-4">
-                            <select class="form-control"
-                                    ng-model="selectedManga"
-                                    ng-options="manga.title for manga in mangas track by manga.title"
-                                    ng-change="loadMangaScript(selectedManga.path)">
-                                <option value="" disabled> - Pick a Manga - </option>
-                            </select>
-                        </div>
-
-                        <div class="col-xs-4">
-                            <select class="form-control"
-                                    ng-model="selectedChapter"
-                                    ng-options="chapter.title for chapter in chapters track by chapter.title"
-                                    ng-change="changeChapterPages(selectedChapter.index, opts)">
-                                <option value="" disabled> - Pick a Chapter - </option>
-                            </select>
-                        </div>
-
-
-                        <div class="col-xs-2">
-                            <select class="form-control"
-                                    ng-model="selectedPage"
-                                    ng-options="page.page for page in pages"
-                                    ng-change="setImgSrc(selectedPage.url)">
-                                <option value="" disabled> - Pick a Page - </option>
-                            </select>
-                        </div>
-
-                        <div class="col-xs-1">
-                            <button class="btn-info btn-lg" ng-click="next()"> Next </button>
-                        </div>
-                    </div>
-                </form>
-
+                </div>
+                <!-- Debug -->
+                <!--<p>selected item is : {{selectedManga.title}}</p>-->
+                <!--<p>selected item is : {{selectedManga.path}</p>-->
+                <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
+                <!--<p>selected item is : {{selectedPage.page}}</p>-->
+                <!-- track by is a hack -->
             </div>
-            <!-- Debug -->
-            <!--<p>selected item is : {{selectedManga.title}}</p>-->
-            <!--<p>selected item is : {{selectedManga.path}</p>-->
-            <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
-            <!--<p>selected item is : {{selectedPage.page}}</p>-->
-            <!-- track by is a hack -->
+
+            <div class="col-md-2"></div>
+
         </div>
-
-        <div class="col-md-2"></div>
-
     </div>
-</div>
+
+    <!-- Mobile, Tablet, Medium Devices-->
+    <div class="container-fluid visible-xs-block visible-sm-block">
+        <div class="row top-buffer">p
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-8">
+                <div class="row">
+                    <form class="form-horizontal">
+                        <div class="form-group form-group-lg">
+                            <div class="col-xs-1">
+                                <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                            </div>
+
+                            <!--<div class="col-xs-4">-->
+                                <!--<select class="form-control"-->
+                                        <!--ng-model="selectedManga"-->
+                                        <!--ng-options="manga.title for manga in mangas track by manga.title"-->
+                                        <!--ng-change="loadMangaScript(selectedManga.path)">-->
+                                    <!--<option value="" disabled> - Pick a Manga - </option>-->
+                                <!--</select>-->
+                            <!--</div>-->
+
+                            <div class="col-xs-4">
+                                <select class="form-control"
+                                        ng-model="selectedChapter"
+                                        ng-options="chapter.title for chapter in chapters track by chapter.title"
+                                        ng-change="changeChapterPages(selectedChapter.index, opts)">
+                                    <option value="" disabled> Chapter </option>
+                                </select>
+                            </div>
+
+
+                            <div class="col-xs-2">
+                                <select class="form-control"
+                                        ng-model="selectedPage"
+                                        ng-options="page.page for page in pages"
+                                        ng-change="setImgSrc(selectedPage.url)">
+                                    <option value="" disabled> Page </option>
+                                </select>
+                            </div>
+
+                            <div class="col-xs-1">
+                                <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- Debug -->
+                <!--<p>selected item is : {{selectedManga.title}}</p>-->
+                <!--<p>selected item is : {{selectedManga.path}</p>-->
+                <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
+                <!--<p>selected item is : {{selectedPage.page}}</p>-->
+                <!-- track by is a hack -->
+            </div>
+
+            <div class="col-md-2"></div>
+
+        </div>
+    </div>
 
 <div id="body" class="container-fluid">
     <div class="row">

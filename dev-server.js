@@ -59,7 +59,7 @@ app.use('/manga_index',express.static(__dirname + '/manga_index'));
 app.use('/manga',express.static(__dirname + '/manga'));
 
 // Actual domain names.
-app.use(vhost('localhost', www));
+app.use(vhost('beastmachine', www));
 // Local host file domain names.
 //app.use(vhost('www.tak.com', home));
 
