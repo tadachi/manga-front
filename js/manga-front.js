@@ -192,10 +192,16 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
                 i++;
 
                 if (preload) {
-                    var preloadImage = new Image();
-                    preloadImage.src = page_url;
-                    preloadImage.onload;
+                    // Synchrounous
+                    //var preloadImage = new Image();
+                    //preloadImage.src = page_url;
+                    //preloadImage.onload;
+                    // Asynchrounous
+                    cache(page_url, function(done) {
+                        // Done
+                    })
                 }
+
 
             });
 
@@ -203,6 +209,13 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
 
         $scope.selectedPage = $scope.pages[0];
         $scope.setImgSrc($scope.selectedPage.url);
+
+        function cache(page_url, callback) {
+            var preloadImage = new Image();
+            preloadImage.src = page_url;
+            preloadImage.onload;
+            callback(true);
+        }
     };
 
     /**
@@ -249,27 +262,27 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
         $scope.url = url;
 
         $scope.getMangaIndexQ(url)
-            .then( function(manga_index){
-                $scope.setChapterIndex(manga_index);
+        .then( function(manga_index){
+            $scope.setChapterIndex(manga_index);
 
-                // Change pages to selected chapter.
-                $scope.changeChapterPages(0, $scope.opts);
+            // Change pages to selected chapter.
+            $scope.changeChapterPages(0, $scope.opts);
 
-                // Set default selected chapter.
-                $scope.selectedChapter = $scope.chapters[0];
+            // Set default selected chapter.
+            $scope.selectedChapter = $scope.chapters[0];
 
-                // set default selected page to first.
-                $scope.selectedPage = $scope.pages[0];
+            // set default selected page to first.
+            $scope.selectedPage = $scope.pages[0];
 
-                // Change the src to the first page.
-                $scope.setImgSrc($scope.pages[0].url);
+            // Change the src to the first page.
+            $scope.setImgSrc($scope.pages[0].url);
 
-                // Debug
-//                    console.log('current: ');
-//                    console.log('chapter: ' + $scope.selectedChapter.index);
-//                    console.log('page ' + $scope.selectedPage.index + '\n');
+            // Debug
+            //console.log('current: ');
+            //console.log('chapter: ' + $scope.selectedChapter.index);
+            //console.log('page ' + $scope.selectedPage.index + '\n');
 
-            })
+        })
 //                .then( function(manga_index) {
 //
 //                })
