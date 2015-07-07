@@ -17,6 +17,11 @@
     <!-- Manga-front css -->
     <link rel="stylesheet" href="css/manga-front.css">
 
+    <!-- HammerJS -->
+    <script src="js/hammer.min.js"></script>
+    <script src="js/angular.hammer.min.js"></script>
+
+
     <!-- Latest compiled and minified JavaScript -->
     <script src="js/bootstrap.min.js"></script>
     <!-- Manga-Front.js must come after AngularJS -->
@@ -26,7 +31,7 @@
 <body ng-controller="Ctrl" ng-keydown="key($event)">
     <!-- Desktop -->
     <div class="container-fluid visible-lg-block">
-        <div class="row top-buffer-md">p
+        <div class="row top-buffer-md">
 
             <div class="col-md-2"></div>
 
@@ -151,15 +156,13 @@
         </div>
     </div>
 
-<div id="body" class="container-fluid">
+<div id="body" class="container-fluid" hm-swipeleft="prev()" hm-swiperight="next()">
     <div class="row">
         <div class="col-md-2">
 
         </div>
         <div class="col-md-8">
-            <div id="image">
-                <img class="img-responsive center-image" ng-src="{{src}}" />
-            </div>
+            <img id="manga-image" class="img-responsive center-image" ng-src="{{src}}" />
         </div>
         <div class="col-md-2">
 

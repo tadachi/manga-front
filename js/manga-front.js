@@ -1,4 +1,4 @@
-var app = angular.module("App", []);
+var app = angular.module("App", ['hmTouchEvents']);
 
 app.controller("Ctrl", function($scope, $http, $q, $location) {
     /*
@@ -220,8 +220,8 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
                 })
             });
 
-
-            console.log($scope.mangas);
+            // Debug
+            //console.log($scope.mangas);
 
             // Set default selected Manga
             $scope.selectedManga = $scope.mangas[0];
@@ -247,8 +247,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
      */
     $scope.loadMangaScript = function(url) {
         $scope.url = url;
-        console.log(url);
-        console.log($scope.url);
+
         $scope.getMangaIndexQ(url)
             .then( function(manga_index){
                 $scope.setChapterIndex(manga_index);
