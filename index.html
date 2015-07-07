@@ -2,7 +2,12 @@
 <html lang="en" ng-app="App">
 
 <head>
-    <!-- Shadow DOMed -->
+    <meta charset="utf-8">
+    <title>stub</title>
+    <meta name="description" content="App">
+    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Bootstrap 3-->
+
     <!-- Jquery -->
     <script src="js/jquery.min.js"></script>
     <!-- AngularJS -->
@@ -155,51 +160,39 @@
 
         </div>
     </div>
-
-<div id="body" class="container-fluid" hm-swipeleft="next()" hm-swiperight="prev()">
-    <div class="row">
-        <div class="col-md-2">
-
-        </div>
-        <div class="col-md-8">
-            <img id="manga-image" class="img-responsive center-image" ng-src="{{src}}" />
-        </div>
-        <div class="col-md-2">
-
-        </div>
-    </div>
-</div>
-
-<div id="footer">
-    <div class="container-fluid">
-        <div class="row top-buffer-xs">
+    <!--<div id="body" class="container-fluid" hm-swipeleft="next()" hm-swiperight="prev()" hm-tap="next()"-->
+    <div id="body" class="container-fluid" hm-tap="next()"
+            hm-recognizer-options='[
+            {"preventDefault": false},
+            {"preventDefault": false}
+            ]'>
+        <div class="row">
             <div class="col-md-2">
 
             </div>
             <div class="col-md-8">
-                Manga-Front App 2015
+                <img id="manga-image" class="img-responsive center-image" ng-src="{{src}}" />
             </div>
             <div class="col-md-2">
 
             </div>
         </div>
     </div>
-</div>
+
+    <div id="footer">
+        <div class="container-fluid">
+            <div class="row top-buffer-xs">
+                <div class="col-md-2">
+
+                </div>
+                <div class="col-md-8">
+                    Manga-Front App 2015
+                </div>
+                <div class="col-md-2">
+
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
-
-<template id="headTemplate">
-    <meta charset="utf-8">
-    <title>stub</title>
-    <meta name="description" content="App">
-    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-    <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Bootstrap 3-->
-</template>
-
-<script>
-    var shadow = document.head.createShadowRoot();
-    var template = document.querySelector('#headTemplate');
-    var templateClone = document.importNode(template.content, true);
-    shadow.appendChild(templateClone);
-</script>
-

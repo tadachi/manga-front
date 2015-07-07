@@ -1,13 +1,18 @@
-.top-buffer-md {
-    margin-top: 20px;
+/* Prevent horizontal scrolling */
+html, body {
+    overflow-x: hidden;
+}
+
+.top-buffer-xs {
+    margin-top: 5px;
 }
 
 .top-buffer-sm {
     margin-top: 10px;
 }
 
-.top-buffer-xs {
-    margin-top: 5px;
+.top-buffer-md {
+    margin-top: 20px;
 }
 
 .center-image {
