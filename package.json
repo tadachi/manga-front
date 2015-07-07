@@ -1,7 +1,6 @@
 {
-  "name": "get-going",
-  "description": "Develop against this server.",
-  "main": "./dev-server.js",
+  "name": "manga-front",
+  "description": "Web front end for manga downloaded through https://github.com/tadachi/manga-scraper .",
   "private": true,
   "dependencies": {
     "express": "^4.12.3",

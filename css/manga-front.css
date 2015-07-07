@@ -1,7 +1,16 @@
-.top-buffer {
+.top-buffer-md {
     margin-top: 20px;
+}
+
+.top-buffer-sm {
+    margin-top: 10px;
+}
+
+.top-buffer-xs {
+    margin-top: 5px;
 }
 
 .center-image {
     margin: 0 auto;
 }
+
