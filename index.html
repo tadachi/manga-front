@@ -38,17 +38,17 @@
         <div class="container-fluid visible-lg-block">
             <div class="row top-buffer-md">
 
-                <div class="col-md-2"></div>
+                <div class="col-lg-2"></div>
 
-                <div class="col-md-8">
+                <div class="col-lg-8">
                     <div class="row">
                         <form class="form-horizontal">
                             <div class="form-group form-group-lg">
-                                <div class="col-xs-1">
-                                    <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                                <div class="col-lg-1">
+                                    <button class="btn-info btn-lg form-control" ng-click="prev()"> Prev </button>
                                 </div>
 
-                                <div class="col-xs-4">
+                                <div class="col-lg-4">
                                     <select class="form-control"
                                             ng-model="selectedManga"
                                             ng-options="manga.title for manga in mangas track by manga.title"
@@ -57,7 +57,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-xs-4">
+                                <div class="col-lg-4">
                                     <select class="form-control"
                                             ng-model="selectedChapter"
                                             ng-options="chapter.title for chapter in chapters track by chapter.title"
@@ -67,7 +67,7 @@
                                 </div>
 
 
-                                <div class="col-xs-2">
+                                <div class="col-lg-2">
                                     <select class="form-control"
                                             ng-model="selectedPage"
                                             ng-options="page.page for page in pages"
@@ -76,8 +76,8 @@
                                     </select>
                                 </div>
 
-                                <div class="col-xs-1">
-                                    <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                                <div class="col-lg-1">
+                                    <button class="btn-info btn-lg form-control" ng-click="next()"> Next </button>
                                 </div>
                             </div>
                         </form>
@@ -91,7 +91,7 @@
                     <!-- track by is a hack -->
                 </div>
 
-                <div class="col-md-2"></div>
+                <div class="col-lg-2"></div>
 
             </div>
         </div>

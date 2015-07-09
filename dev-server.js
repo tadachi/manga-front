@@ -8,6 +8,8 @@ var app             = express();
 var geoip           = require('geoip-lite');
 var vhost           = require('vhost');
 
+var hostname = 'beastmachine'
+
 // Simple timestamp function. Invoke with timestamp();
 var htimeStamp = function() {
     var date = new Date();
@@ -29,7 +31,7 @@ var log = bunyan.createLogger({name: 'myapp'});
 var httpServer = app.listen(httpPort, function() {
     //debug('Express webServer listening on httpPort ' + webServer.address().httpPort);
     console.log(__dirname);
-    console.log('Edit index.html and try localhost:4000 in your web browser.');
+    console.log('Edit index.html and try ' + hostname + ':4000 in your web browser.');
     console.log('Listening on httpPort: ' + httpPort);
     console.log('node -v: ' + process.versions.node);
 });
@@ -59,7 +61,7 @@ app.use('/manga_index',express.static(__dirname + '/manga_index'));
 app.use('/manga',express.static(__dirname + '/manga'));
 
 // Actual domain names.
-app.use(vhost('beastmachine', www));
+app.use(vhost(hostname, www));
 // Local host file domain names.
 //app.use(vhost('www.tak.com', home));
 
