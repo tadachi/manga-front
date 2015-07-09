@@ -1,198 +1,200 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="App">
+<html lang="en" ng-app="App" ng-controller="Ctrl">
 
-<head>
-    <meta charset="utf-8">
-    <title>Manga-Front</title>
-    <meta name="description" content="App">
-    <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Bootstrap 3-->
+    <head>
+        <meta charset="utf-8">
+        <title>Manga-Front - {{manga_name}} {{chapter_title}} - Page {{page}}</title>
+        <meta name="description" content="App">
+        <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Bootstrap 3-->
 
-    <!-- Jquery -->
-    <script src="js/jquery.min.js"></script>
-    <!-- AngularJS -->
-    <script src='js/angular.min.js'></script>
-    <!-- StringJS -->
-    <script src="js/string.min.js"></script>
+        <!-- Jquery -->
+        <script src="js/jquery.min.js"></script>
+        <!-- AngularJS -->
+        <script src='js/angular.min.js'></script>
+        <!-- StringJS -->
+        <script src="js/string.min.js"></script>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-    <!-- Manga-front css -->
-    <link rel="stylesheet" href="css/manga-front.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <!-- Manga-front css -->
+        <link rel="stylesheet" href="css/manga-front.css">
 
-    <!-- HammerJS -->
-    <script src="js/hammer.min.js"></script>
-    <script src="js/angular.hammer.min.js"></script>
+        <!-- HammerJS -->
+        <script src="js/hammer.min.js"></script>
+        <script src="js/angular.hammer.min.js"></script>
 
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
-    <!-- Manga-Front.js must come after AngularJS -->
-    <script src="js/manga-front.js"></script>
-</head>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="js/bootstrap.min.js"></script>
+        <!-- Manga-Front.js must come after AngularJS -->
+        <script src="js/manga-front.js"></script>
+    </head>
 
-<body ng-controller="Ctrl" ng-keydown="key($event)">
-    <!-- Desktop -->
-    <div class="container-fluid visible-lg-block">
-        <div class="row top-buffer-md">
+    <body ng-keydown="key($event)">
+        <!-- Desktop -->
+        <div class="container-fluid visible-lg-block">
+            <div class="row top-buffer-md">
 
-            <div class="col-md-2"></div>
+                <div class="col-md-2"></div>
 
-            <div class="col-md-8">
-                <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <form class="form-horizontal">
+                            <div class="form-group form-group-lg">
+                                <div class="col-xs-1">
+                                    <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <select class="form-control"
+                                            ng-model="selectedManga"
+                                            ng-options="manga.title for manga in mangas track by manga.title"
+                                            ng-change="loadMangaScript(selectedManga.path, selectedManga.index, true)">
+                                        <option value="" disabled> - Pick a Manga - </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-4">
+                                    <select class="form-control"
+                                            ng-model="selectedChapter"
+                                            ng-options="chapter.title for chapter in chapters track by chapter.title"
+                                            ng-change="changeChapterPages(selectedChapter.index, opts)">
+                                        <option value="" disabled> - Pick a Chapter - </option>
+                                    </select>
+                                </div>
+
+
+                                <div class="col-xs-2">
+                                    <select class="form-control"
+                                            ng-model="selectedPage"
+                                            ng-options="page.page for page in pages"
+                                            ng-change="changePage(selectedPage.url, selectedPage.index)">
+                                        <option value="" disabled> - Pick a Page - </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                    <!-- Debug -->
+                    <!--<p>selected item is : {{selectedManga.title}}</p>-->
+                    <!--<p>selected item is : {{selectedManga.path}</p>-->
+                    <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
+                    <!--<p>selected item is : {{selectedPage.page}}</p>-->
+                    <!-- track by is a hack -->
+                </div>
+
+                <div class="col-md-2"></div>
+
+            </div>
+        </div>
+
+        <!-- Mobile, Tablet, Medium Devices-->
+        <div class="container-fluid visible-xs-block visible-sm-block visible-md-block ">
+            <div class="row top-buffer-md">
+
+                <div class="col-md-2"></div>
+
+                <div class="col-md-8">
                     <form class="form-horizontal">
-                        <div class="form-group form-group-lg">
-                            <div class="col-xs-1">
-                                <button class="btn-info btn-lg" ng-click="prev()"> Prev </button>
+                        <div class="form-group form-group-xs">
+                            <div class="row top-buffer-xs">
+                                <div class="col-xs-offset-1 col-xs-10">
+                                    <select class="form-control input-sm"
+                                            ng-model="selectedManga"
+                                            ng-options="manga.title for manga in mangas track by manga.title"
+                                            ng-change="loadMangaScript(selectedManga.path, selectedManga.index, true)">
+                                        <option value="" disabled> - Pick a Manga - </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2"></div>
                             </div>
 
-                            <div class="col-xs-4">
-                                <select class="form-control"
-                                        ng-model="selectedManga"
-                                        ng-options="manga.title for manga in mangas track by manga.title"
-                                        ng-change="loadMangaScript(selectedManga.path)">
-                                    <option value="" disabled> - Pick a Manga - </option>
-                                </select>
+                            <div class="row top-buffer-xs">
+                                <div class="col-xs-offset-1 col-xs-10">
+                                    <select class="form-control input-sm"
+                                            ng-model="selectedChapter"
+                                            ng-options="chapter.title for chapter in chapters track by chapter.title"
+                                            ng-change="changeChapterPages(selectedChapter.index, opts)">
+                                        <option value="" disabled> - Pick a Chapter - </option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="col-xs-4">
-                                <select class="form-control"
-                                        ng-model="selectedChapter"
-                                        ng-options="chapter.title for chapter in chapters track by chapter.title"
-                                        ng-change="changeChapterPages(selectedChapter.index, opts)">
-                                    <option value="" disabled> - Pick a Chapter - </option>
-                                </select>
-                            </div>
-
-
-                            <div class="col-xs-2">
-                                <select class="form-control"
-                                        ng-model="selectedPage"
-                                        ng-options="page.page for page in pages"
-                                        ng-change="setImgSrc(selectedPage.url)">
-                                    <option value="" disabled> - Pick a Page - </option>
-                                </select>
-                            </div>
-
-                            <div class="col-xs-1">
-                                <button class="btn-info btn-lg" ng-click="next()"> Next </button>
+                            <div class="row top-buffer-sm">
+                                <div class="col-xs-3 text-right">
+                                    <button class="btn-info btn-sm" ng-click="prev()"> Prev </button>
+                                </div>
+                                <div class="col-xs-6">
+                                    <select class="form-control input-sm"
+                                            ng-model="selectedPage"
+                                            ng-options="page.page for page in pages"
+                                            ng-change="changePage(selectedPage.url, selectedPage.index)">
+                                        <option value="" disabled> Page </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3 text-left">
+                                    <button class="btn-info btn-sm" ng-click="next()"> Next </button>
+                                </div>
                             </div>
                         </div>
                     </form>
 
                 </div>
-                <!-- Debug -->
-                <!--<p>selected item is : {{selectedManga.title}}</p>-->
-                <!--<p>selected item is : {{selectedManga.path}</p>-->
-                <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
-                <!--<p>selected item is : {{selectedPage.page}}</p>-->
-                <!-- track by is a hack -->
-            </div>
+                    <!-- Debug -->
+                    <!--<p>selected item is : {{selectedManga.title}}</p>-->
+                    <!--<p>selected item is : {{selectedManga.path}</p>-->
+                    <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
+                    <!--<p>selected item is : {{selectedPage.page}}</p>-->
+                    <!-- track by is a hack -->
+                </div>
 
-            <div class="col-md-2"></div>
-
-        </div>
-    </div>
-
-    <!-- Mobile, Tablet, Medium Devices-->
-    <div class="container-fluid visible-xs-block visible-sm-block visible-md-block ">
-        <div class="row top-buffer-md">
-
-            <div class="col-md-2"></div>
-
-            <div class="col-md-8">
-                <form class="form-horizontal">
-                    <div class="form-group form-group-xs">
-                        <div class="row top-buffer-xs">
-                            <div class="col-xs-offset-1 col-xs-10">
-                                <select class="form-control input-sm"
-                                        ng-model="selectedManga"
-                                        ng-options="manga.title for manga in mangas track by manga.title"
-                                        ng-change="loadMangaScript(selectedManga.path)">
-                                    <option value="" disabled> - Pick a Manga - </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-2"></div>
-                        </div>
-
-                        <div class="row top-buffer-xs">
-                            <div class="col-xs-offset-1 col-xs-10">
-                                <select class="form-control input-sm"
-                                        ng-model="selectedChapter"
-                                        ng-options="chapter.title for chapter in chapters track by chapter.title"
-                                        ng-change="changeChapterPages(selectedChapter.index, opts)">
-                                    <option value="" disabled> Chapter </option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="row top-buffer-sm">
-                            <div class="col-xs-3 text-right">
-                                <button class="btn-info btn-sm" ng-click="prev()"> Prev </button>
-                            </div>
-                            <div class="col-xs-6">
-                                <select class="form-control input-sm"
-                                        ng-model="selectedPage"
-                                        ng-options="page.page for page in pages"
-                                        ng-change="setImgSrc(selectedPage.url)">
-                                    <option value="" disabled> Page </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3 text-left">
-                                <button class="btn-info btn-sm" ng-click="next()"> Next </button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-                <!-- Debug -->
-                <!--<p>selected item is : {{selectedManga.title}}</p>-->
-                <!--<p>selected item is : {{selectedManga.path}</p>-->
-                <!--<p>selected item is : {{selectedChapter.tit}le}}</p>-->
-                <!--<p>selected item is : {{selectedPage.page}}</p>-->
-                <!-- track by is a hack -->
-            </div>
-
-            <div class="col-md-2"></div>
-
-        </div>
-    </div>
-    <!--<div id="body" class="container-fluid" hm-swipeleft="next()" hm-swiperight="prev()" hm-tap="next()"-->
-    <div id="body" class="container-fluid" hm-tap="next()"
-            hm-recognizer-options='[
-            {"preventDefault": false},
-            {"preventDefault": false}
-            ]'>
-        <div class="row">
-            <div class="col-md-2">
-
-            </div>
-            <div class="col-md-8">
-                <img id="manga-image" class="img-responsive center-image" ng-src="{{src}}" />
-            </div>
-            <div class="col-md-2">
+                <div class="col-md-2"></div>
 
             </div>
         </div>
-    </div>
-
-    <div id="footer">
-        <div class="container-fluid">
-            <div class="row top-buffer-xs">
+        <!--<div id="body" class="container-fluid" hm-swipeleft="next()" hm-swiperight="prev()" hm-tap="next()"-->
+        <div id="body" class="container-fluid" hm-tap="next()"
+                hm-recognizer-options='[
+                {"preventDefault": false},
+                {"preventDefault": false}
+                ]'>
+            <div class="row">
                 <div class="col-md-2">
 
                 </div>
                 <div class="col-md-8">
-                    Manga-Front App 2015
+                    <a ng-href="{{href}}">
+                        <img id="manga-image" class="img-responsive center-image" ng-src="{{src}}" />
+                    </a>
                 </div>
                 <div class="col-md-2">
 
                 </div>
             </div>
         </div>
-    </div>
-</body>
+
+        <div id="footer">
+            <div class="container-fluid">
+                <div class="row top-buffer-xs">
+                    <div class="col-md-2">
+
+                    </div>
+                    <div class="col-md-8">
+                        Manga-Front App 2015
+                    </div>
+                    <div class="col-md-2">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
