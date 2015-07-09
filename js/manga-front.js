@@ -92,7 +92,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     // Setup URL vars
     var port = ':' + $location.port();
     if ($location.port() == 80) port = '';
-    $scope.hostname = $location.protocol() + '://' + $location.host() + port + '/'; // http://localhost:4000, http://beastmachine/, http://www.tak.com/
+    $scope.hostname = $location.protocol() + '://' + $location.host() + port + location.pathname; // http://localhost:4000, http://beastmachine/, http://www.tak.com/
     $scope.absoluteUrl = $location.absUrl();
 
     $scope.manga_index_url = $scope.hostname + 'manga_index/index.json';
@@ -108,6 +108,7 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     //console.log(getQueryStringParams('c'));
     //console.log(getQueryStringParams('p'));
     //console.log($scope.absoluteUrl);
+    //console.log(location.pathname);
 
     /**
      * Functions
