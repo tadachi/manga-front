@@ -5,7 +5,7 @@
  */
 
 /**
- * Similar to what you find in Java"s format.
+ * Similar to what you find in Java's format.
  * Usage: chatsrc = "http://twitch.tv/chat/embed?channel={channel}&amp;popout_chat=true".format({ channel: streamer});
  */
 if (!String.prototype.format) {
@@ -65,14 +65,14 @@ function getQueryStringParams(sParam) {
  *
  */
 
-var app = angular.module("App", ['hmTouchEvents']);
+var app = angular.module("App", ['hmTouchEvents', 'ngRoute']);
 
-app.controller("Ctrl", function($scope, $http, $q, $location) {
+app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location) {
     /**
      * Variables
      */
     // Manga vars
-    $scope.mangas = [];
+    $scope.mangas = {};
     $scope.chapters = [];
     $scope.chapters_pages = [];
     $scope.pages = []; // [{page: 'Page 1', url: 'http://hostname/manga/manga_name/volume/chapter/001.jpg'}]
@@ -83,11 +83,12 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     $scope.m = 0;
     $scope.c = 0;
     $scope.p = 0;
-
-    $scope.appName = 'manga-front';
     $scope.manga_name = ''; // Manga name.
     $scope.chapter_title = '';
     $scope.page = $scope.p + 1; // Human-readable.
+
+    $scope.appName = 'manga-front';
+
 
     // Setup URL vars
     var port = ':' + $location.port();
@@ -369,19 +370,27 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
     $scope.loadMangaListScript = function(index_url) {
         $scope.manga_index_url = index_url;
         var m = 0;
+        var name = '';
         if (getQueryStringParams('m')) m = getQueryStringParams('m');
+        if (getQueryStringParams('name')) name = getQueryStringParams('name');
 
         t(function(mangas) {
             angular.forEach(mangas, function(manga) {
                 // STUB Give title a fancier title.
-                $scope.mangas.push({
+
+                $scope.mangas[manga['title']] = {
                     title: manga['title'], index: manga['index'],
                     path: $scope.hostname + manga['path']
-                })
+                };
+
+                //$scope.mangas.push({
+                //    title: manga['title'], index: manga['index'],
+                //    path: $scope.hostname + manga['path']
+                //})
             });
 
             // Set default selected Manga
-            $scope.selectedManga = $scope.mangas[m];
+            $scope.selectedManga = $scope.mangas[name];
             $scope.manga_name = $scope.selectedManga.title;
 
             $scope.loadMangaScript($scope.selectedManga.path, m, false);
@@ -472,6 +481,36 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
         window.location = $scope.href;
     };
 
+
+    /*
+     * Events
+     */
+    $rootScope.$on('$locationChangeSuccess', function() {
+        var m = 0;
+        var c = 0;
+        var p = 0;
+        var name = '';
+
+        if (getQueryStringParams('name')) p = getQueryStringParams('p');
+        if (getQueryStringParams('m')) m = getQueryStringParams('m');
+        if (getQueryStringParams('c')) c = getQueryStringParams('c');
+        if (getQueryStringParams('p')) p = getQueryStringParams('p');
+
+        //console.log($location.absUrl());
+        //$rootScope.actualLocation = $location.absUrl();
+        //$scope.m = m;
+        //$scope.c = c;
+        //$scope.p = p;
+        //$scope.setMangaQueryParams($scope.manga_name, $scope.m, $scope.c, $scope.p);
+
+        //$scope.setImgSrc($scope.pages[p].url);
+        //console.log($scope.href);
+        //console.log($scope.pages);
+
+        console.log([$scope.mangas, $scope.chapters, $scope.chapters_pages, $scope.pages, $scope.selectedManga]);
+
+    });
+
     angular.element(document).ready(function () {
         console.log('Hello World');
         // Debug
@@ -484,6 +523,8 @@ app.controller("Ctrl", function($scope, $http, $q, $location) {
         //console.log(getQueryStringParams('c'));
         //console.log(getQueryStringParams('p'));
     });
+
+
 
 });
 
