@@ -73,7 +73,7 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
      */
     // Manga vars
     $scope.mangas = {};
-    $scope.chapters = [];
+    $scope.chapters = []; // All chapters.
     $scope.chapters_pages = [];
     $scope.pages = []; // [{page: 'Page 1', url: 'http://hostname/manga/manga_name/volume/chapter/001.jpg'}]
     $scope.selectedManga;
@@ -87,14 +87,25 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
     $scope.chapter_title = '';
     $scope.page = $scope.p + 1; // Human-readable.
 
-    $scope.appName = 'manga-front';
+    $scope.app_name = 'manga-front';
+    // Cache queue for downloading images one at a time.
+    $scope.image_cache_queue = async.queue(function(page_url, callback) {
+        cache(page_url, function(done) {
+            console.log(done);
+            callback();
+        });
 
+    }, 4);
+    // Finished queue sequence.
+    $scope.image_cache_queue.drain = function() {
+        console.log('all items have been processed');
+    };
 
     // Setup URL vars
     var port = ':' + $location.port();
     if ($location.port() == 80) port = '';
     $scope.hostname = $location.protocol() + '://' + $location.host() + port + location.pathname; // http://localhost:4000, http://beastmachine/, http://www.tak.com/
-    $scope.absoluteUrl = $location.absUrl();
+    $scope.absolute_url = $location.absUrl();
 
     $scope.manga_index_url = $scope.hostname + 'manga_index/index.json';
     $scope.url;
@@ -108,7 +119,7 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
     //console.log(getQueryStringParams('m'));
     //console.log(getQueryStringParams('c'));
     //console.log(getQueryStringParams('p'));
-    //console.log($scope.absoluteUrl);
+    //console.log($scope.absolute_url);
     //console.log(location.pathname);
 
     /**
@@ -294,7 +305,7 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
      */
     $scope.changeChapterPages = function(index, opts) { // index corresponds to chapter: 0, 1, 2, 3...
         var preload = true;
-        if (opts['preload']) { preload = opts['preload'] };
+        if (typeof(opts['preload']) === 'boolean') { preload = opts['preload'] };
 
         // Reset pages and set to new chapter.
         $scope.pages = [];
@@ -308,15 +319,18 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
                 $scope.pages.push({page: 'Page ' + (i + 1), url: page_url, index: i}); // +1 for pages.
                 i++;
 
+                // Debug
+                //console.log(preload);
                 if (preload) {
-                    // Synchrounous
+                    // Synchronous
                     //var preloadImage = new Image();
                     //preloadImage.src = page_url;
                     //preloadImage.onload;
-                    // Asynchrounous
-                    cache(page_url, function(done) {
-                        // Done
-                    })
+
+                    // Asynchronous
+                    $scope.image_cache_queue.push(page_url, function(err) {
+
+                    });
                 }
 
 
@@ -346,13 +360,15 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
         //console.log($scope.url);
         //console.log($scope.selectedPage.url);
 
-        function cache(page_url, callback) {
-            var preloadImage = new Image();
-            preloadImage.src = page_url;
-            preloadImage.onload;
-            callback(true);
-        }
     };
+
+    function cache(page_url, callback) {
+        var preloadImage = new Image();
+        preloadImage.src = page_url;
+        preloadImage.onload = function() {
+            callback(true);
+        };
+    }
 
     $scope.changePage = function(url, page) {
         //Debug
@@ -372,9 +388,10 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
         var m = 0;
         var name = '';
         if (getQueryStringParams('m')) m = getQueryStringParams('m');
-        if (getQueryStringParams('name')) name = getQueryStringParams('name');
 
         t(function(mangas) {
+            // Debug
+            //console.log(mangas);
             angular.forEach(mangas, function(manga) {
                 // STUB Give title a fancier title.
 
@@ -383,21 +400,26 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
                     path: $scope.hostname + manga['path']
                 };
 
-                //$scope.mangas.push({
-                //    title: manga['title'], index: manga['index'],
-                //    path: $scope.hostname + manga['path']
-                //})
             });
+
+            // Use the first manga if there isn't a query string available.
+            if (getQueryStringParams('name')) {
+                name = getQueryStringParams('name');
+            } else {
+                name = Object.keys($scope.mangas)[0];
+            }
 
             // Set default selected Manga
             $scope.selectedManga = $scope.mangas[name];
             $scope.manga_name = $scope.selectedManga.title;
 
-            $scope.loadMangaScript($scope.selectedManga.path, m, false);
-
             // Debug
             //console.log($scope.mangas);
             //console.log($scope.selectedManga.path);
+
+            $scope.loadMangaScript($scope.selectedManga.path, m, false);
+
+
         });
 
         function t(callback) {
@@ -428,7 +450,7 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
 
         // Debug
         console.log('m:' + m + ' c:' + c + ' p:' + p);
-        console.log(reset);
+        console.log('reset: ' + reset);
 
         $scope.getMangaIndexQ(index_url)
         .then( function(manga_index){
@@ -466,9 +488,6 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
             //console.log('page ' + $scope.selectedPage.index + '\n');
 
         });
-        //.then( function(manga_index) {
-        //
-        //})
     };
 
     $scope.setMangaQueryParams = function(manga_name, manga_index, chapter_index, page_index) {
@@ -485,31 +504,40 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
     /*
      * Events
      */
-    $rootScope.$on('$locationChangeSuccess', function() {
-        var m = 0;
-        var c = 0;
-        var p = 0;
-        var name = '';
-
-        if (getQueryStringParams('name')) p = getQueryStringParams('p');
-        if (getQueryStringParams('m')) m = getQueryStringParams('m');
-        if (getQueryStringParams('c')) c = getQueryStringParams('c');
-        if (getQueryStringParams('p')) p = getQueryStringParams('p');
-
-        //console.log($location.absUrl());
-        //$rootScope.actualLocation = $location.absUrl();
-        //$scope.m = m;
-        //$scope.c = c;
-        //$scope.p = p;
-        //$scope.setMangaQueryParams($scope.manga_name, $scope.m, $scope.c, $scope.p);
-
-        //$scope.setImgSrc($scope.pages[p].url);
-        //console.log($scope.href);
-        //console.log($scope.pages);
-
-        console.log([$scope.mangas, $scope.chapters, $scope.chapters_pages, $scope.pages, $scope.selectedManga]);
-
-    });
+    //$rootScope.$on('$locationChangeSuccess', function() {
+    //    //var m = 0;
+    //    //var c = 0;
+    //    //var p = 0;
+    //    //var name = '';
+    //    //
+    //    //if (getQueryStringParams('name')) p = getQueryStringParams('p');
+    //    //if (getQueryStringParams('m')) m = getQueryStringParams('m');
+    //    //if (getQueryStringParams('c')) c = getQueryStringParams('c');
+    //    //if (getQueryStringParams('p')) p = getQueryStringParams('p');
+    //
+    //    //$scope.loadMangaListScript($scope.manga_index_url);
+    //
+    //    //console.log($location.absUrl());
+    //    //$rootScope.actualLocation = $location.absUrl();
+    //    //$scope.m = m;
+    //    //$scope.c = c;
+    //    //$scope.p = p;
+    //    //$scope.setMangaQueryParams($scope.manga_name, $scope.m, $scope.c, $scope.p);
+    //
+    //    //$scope.setImgSrc($scope.pages[p].url);
+    //    console.log($scope.href);
+    //    console.log($scope.pages);
+    //    console.log($scope.manga_index_url);
+    //    console.log($scope.url);
+    //    console.log($scope.mangas[name]);
+    //    console.log([$scope.mangas, $scope.chapters,
+    //        $scope.chapters_pages, $scope.pages, $scope.selectedManga,
+    //        $scope.selectedChapter,
+    //        $scope.selectedPage
+    //    ]);
+    //
+    //
+    //});
 
     angular.element(document).ready(function () {
         console.log('Hello World');
@@ -517,6 +545,7 @@ app.controller("Ctrl", function($rootScope, $route, $scope, $http, $q, $location
         //console.log(angular.version);
         // Load list of mangas from index.json
         $scope.loadMangaListScript($scope.manga_index_url);
+
 
         // Debug
         //console.log(getQueryStringParams('m'));

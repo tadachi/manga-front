@@ -8,7 +8,8 @@ var app             = express();
 var geoip           = require('geoip-lite');
 var vhost           = require('vhost');
 
-var hostname = 'beastmachine'
+var hostname        = 'beastmachine';
+var favicon         = require('serve-favicon');
 
 // Simple timestamp function. Invoke with timestamp();
 var htimeStamp = function() {
@@ -36,7 +37,7 @@ var httpServer = app.listen(httpPort, function() {
     console.log('node -v: ' + process.versions.node);
 });
 
-var ioHttp = require('socket.io').listen(httpServer);
+//var ioHttp = require('socket.io').listen(httpServer);
 
 /**
  *  Initialize website(s).
@@ -56,7 +57,7 @@ www.use('/css', express.static(__dirname + '/css'));
 www.use('/fonts', express.static(__dirname + '/fonts'));
 
 // eg. http://localhost:4000/manga_index/another_world_it_exists_index.json
-app.use('/manga_index',express.static(__dirname + '/manga_index'));
+app.use('/manga_index', express.static(__dirname + '/manga_index'));
 // eg. http://localhost:4000/manga/another_world_it_exists/vo1/001.jpg ... 002.jpg
 app.use('/manga',express.static(__dirname + '/manga'));
 
@@ -65,6 +66,8 @@ app.use(vhost(hostname, www));
 // Local host file domain names.
 //app.use(vhost('www.tak.com', home));
 
+// Favicon
+app.use(favicon(__dirname + '/favicon.ico'));
 
 /**
  *  Serve web content.
